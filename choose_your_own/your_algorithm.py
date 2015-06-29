@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 from prep_terrain_data import makeTerrainData
 from class_vis import prettyPicture
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 
 features_train, labels_train, features_test, labels_test = makeTerrainData()
@@ -34,7 +34,7 @@ bumpy_slow = [features_train[ii][1] for ii in range(0, len(features_train)) if l
 ### visualization code (prettyPicture) to show you the decision boundary
 
 
-clf = AdaBoostClassifier(n_estimators=100, learning_rate=1.0)
+clf = RandomForestClassifier(n_estimators=1000, criterion='entropy')
 clf.fit(features_train, labels_train)
 print clf.score(features_test, labels_test)
 
