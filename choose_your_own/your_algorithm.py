@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 from prep_terrain_data import makeTerrainData
 from class_vis import prettyPicture
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import AdaBoostClassifier
 
 
 features_train, labels_train, features_test, labels_test = makeTerrainData()
@@ -34,7 +34,7 @@ bumpy_slow = [features_train[ii][1] for ii in range(0, len(features_train)) if l
 ### visualization code (prettyPicture) to show you the decision boundary
 
 
-clf = KNeighborsClassifier(n_neighbors=10, weights='distance')
+clf = AdaBoostClassifier(n_estimators=100, learning_rate=1.0)
 clf.fit(features_train, labels_train)
 print clf.score(features_test, labels_test)
 
