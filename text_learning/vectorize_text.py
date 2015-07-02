@@ -4,6 +4,7 @@ import os
 import pickle
 import re
 import sys
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 sys.path.append( "../tools/" )
 from parse_out_email_text import parseOutText
@@ -22,6 +23,10 @@ from parse_out_email_text import parseOutText
 
 """
 
+from nltk.corpus import stopwords
+stop = stopwords.words('english')
+
+vectorizer = TfidfVectorizer(stop_words=stop)
 
 from_sara  = open("from_sara.txt", "r")
 from_chris = open("from_chris.txt", "r")
@@ -33,34 +38,45 @@ word_data = []
 ### thousands of emails from Sara and Chris, so running over all of them
 ### can take a long time
 ### temp_counter helps you only look at the first 200 emails in the list
-temp_counter = 0
+# temp_counter = 0
 
+words_to_remove = ["sara", "shackleton", "chris", "germani"]
 
 for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
     for path in from_person:
         ### only look at first 200 emails when developing
         ### once everything is working, remove this line to run over full dataset
-        temp_counter += 1
-        if temp_counter < 200:
-            path = os.path.join('..', path[:-1])
-            print path
-            email = open(path, "r")
+        # temp_counter += 1
+        # if temp_counter < 200:
+        path = os.path.join('..', path[:-1])
+        print path
+        email = open(path, "r")
 
-            ### use parseOutText to extract the text from the opened email
+        ### use parseOutText to extract the text from the opened email
+        email_contents = parseOutText(email)
 
-            ### use str.replace() to remove any instances of the words
-            ### ["sara", "shackleton", "chris", "germani"]
+        ### use str.replace() to remove any instances of the words
+        ### ["sara", "shackleton", "chris", "germani"]
+        for w in words_to_remove:
+            email_contents.replace(w, "")
 
-            ### append the text to word_data
+        ### append the text to word_data
+        word_data.append(email_contents)
 
-            ### append a 0 to from_data if email is from Sara, and 1 if email is from Chris
+        ### append a 0 to from_data if email is from Sara, and 1 if email is from Chris
+        if name == "sara":
+            from_data.append(0)
+        else:
+            from_data.append(1)
 
-
-            email.close()
+        email.close()
 
 print "emails processed"
 from_sara.close()
 from_chris.close()
+
+vectorized_word_data = vectorizer.fit_transform(word_data)
+print vectorizer.get_feature_names()[34596]
 
 pickle.dump( word_data, open("your_word_data.pkl", "w") )
 pickle.dump( from_data, open("your_email_authors.pkl", "w") )
