@@ -14,8 +14,7 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append("../tools/")
 from feature_format import featureFormat, targetFeatureSplit
-
-
+from sklearn.preprocessing import MinMaxScaler
 
 
 def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature 1", f2_name="feature 2"):
@@ -43,17 +42,21 @@ def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature
 data_dict = pickle.load( open("../final_project/final_project_dataset.pkl", "r") )
 ### there's an outlier--remove it! 
 data_dict.pop("TOTAL", 0)
-
+# arr1 = [data_dict[a]['salary'] for a in data_dict.keys()]
+# print sorted(arr1)
 
 ### the input features we want to use 
 ### can be any key in the person-level dictionary (salary, director_fees, etc.) 
 feature_1 = "salary"
 feature_2 = "exercised_stock_options"
-poi  = "poi"
+poi = "poi"
 features_list = [poi, feature_1, feature_2]
 data = featureFormat(data_dict, features_list )
 poi, finance_features = targetFeatureSplit( data )
 
+scaler = MinMaxScaler()
+finance_features = scaler.fit_transform(finance_features)
+print scaler.transform([[200000., 1000000.]])
 
 ### in the "clustering with 3 features" part of the mini-project,
 ### you'll want to change this line to 
