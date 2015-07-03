@@ -4,6 +4,7 @@ import pickle
 import numpy
 numpy.random.seed(42)
 
+from sklearn.tree import DecisionTreeClassifier
 
 ### the words (features) and authors (labels), already largely processed
 ### these files should have been created from the previous (Lesson 10) mini-project.
@@ -33,9 +34,23 @@ features_test  = vectorizer.transform(features_test).toarray()
 features_train = features_train[:150].toarray()
 labels_train   = labels_train[:150]
 
-
-
+print features_train.shape
+print 'now training'
 ### your code goes here
+clf = DecisionTreeClassifier()
+clf.fit(features_train, labels_train)
 
+print 'now predicting'
+print clf.score(features_test, labels_test)
+
+imp = clf.feature_importances_
+print imp
+
+m = max(imp)
+print m
+
+print numpy.argmax(imp)
+print numpy.where(imp > 0.2)
+print vectorizer.get_feature_names()[numpy.argmax(imp)]
 
 

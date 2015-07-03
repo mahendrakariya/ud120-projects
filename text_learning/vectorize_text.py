@@ -6,7 +6,7 @@ import re
 import sys
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-sys.path.append( "../tools/" )
+sys.path.append("../tools/")
 from parse_out_email_text import parseOutText
 
 """
@@ -23,12 +23,12 @@ from parse_out_email_text import parseOutText
 
 """
 
-from nltk.corpus import stopwords
-stop = stopwords.words('english')
+# from nltk.corpus import stopwords
+# stop = stopwords.words('english')
 
-vectorizer = TfidfVectorizer(stop_words=stop)
+vectorizer = TfidfVectorizer(stop_words='english')
 
-from_sara  = open("from_sara.txt", "r")
+from_sara = open("from_sara.txt", "r")
 from_chris = open("from_chris.txt", "r")
 
 from_data = []
@@ -40,7 +40,7 @@ word_data = []
 ### temp_counter helps you only look at the first 200 emails in the list
 # temp_counter = 0
 
-words_to_remove = ["sara", "shackleton", "chris", "germani"]
+words_to_remove = ["sara", "shackleton", "chris", "germani", "sshacklensf", "cgermannsf"]
 
 for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
     for path in from_person:
@@ -58,12 +58,13 @@ for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
         ### use str.replace() to remove any instances of the words
         ### ["sara", "shackleton", "chris", "germani"]
         for w in words_to_remove:
-            email_contents.replace(w, "")
+            email_contents = email_contents.replace(w, "")
 
         ### append the text to word_data
         word_data.append(email_contents)
 
         ### append a 0 to from_data if email is from Sara, and 1 if email is from Chris
+
         if name == "sara":
             from_data.append(0)
         else:
@@ -74,17 +75,14 @@ for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
 print "emails processed"
 from_sara.close()
 from_chris.close()
+# print from_data
 
-vectorized_word_data = vectorizer.fit_transform(word_data)
-print vectorizer.get_feature_names()[34596]
-
-pickle.dump( word_data, open("your_word_data.pkl", "w") )
-pickle.dump( from_data, open("your_email_authors.pkl", "w") )
-
-
-
-
+pickle.dump(word_data, open("your_word_data.pkl", "w"))
+pickle.dump(from_data, open("your_email_authors.pkl", "w"))
 
 ### in Part 4, do TfIdf vectorization here
-
+vectorized_word_data = vectorizer.fit_transform(word_data)
+print len(vectorizer.get_feature_names())
+print vectorizer.get_feature_names()[34596]
+print vectorizer.get_feature_names()[34597]
 
